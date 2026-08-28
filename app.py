@@ -13,14 +13,14 @@ st.markdown("Provide the following details :")
 
 
 age = st.slider("AGE", 18, 100, 40)
-bmi = st.slider("BMI", 10.0, 55.0, 25.0)  # Changed to float & increased max range
+bmi = st.slider("BMI", 10.0, 55.0, 25.0)  
 sex = st.selectbox("SEX", ["M", "F"])
 children = st.number_input("NUMBER OF CHILDREN", min_value=0, max_value=10, value=2, step=1)
 smoker = st.selectbox("DO YOU SMOKE?", ["Y", "N"])
 region = st.selectbox("SELECT REGION", ["northeast", "northwest", "southeast", "southwest"])
 
 if st.button("Predict"):
-    # 1. Match dictionary values to UI inputs
+    #  Match dictionary values to UI inputs
     raw_input = {
         'age': age,
         'bmi': bmi,
@@ -31,22 +31,22 @@ if st.button("Predict"):
         'bmi_categories_obese': 1 if bmi > 29.9 else 0
     }
     
-    # 2. Construct DataFrame cleanly from dict (scalar values in single-row list)
+    #  Construct DataFrame cleanly from dict 
     input_df = pd.DataFrame([raw_input])
     
-    # 3. Align with expected model features
+    #  Align with expected model features
     for col in expected_columns:
         if col not in input_df.columns:
             input_df[col] = 0
             
     input_df = input_df[expected_columns]
     
-    # 4. Scale ONLY the numerical columns that the scaler knows about
+    #  Scale ONLY the numerical columns that the scaler knows about
     numerical_cols = list(scaler.feature_names_in_)
     input_df[numerical_cols] = scaler.transform(input_df[numerical_cols])
     
-    # 5. Generate prediction
+    # Generate prediction
     prediction = model.predict(input_df)[0]
     
-    # 6. Display in Streamlit UI instead of terminal print
+    #  Display in Streamlit UI instead of terminal print
     st.success(f"Predicted Insurance Charge: **${prediction:,.2f}**")
